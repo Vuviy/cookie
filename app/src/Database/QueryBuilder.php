@@ -87,11 +87,13 @@ final class QueryBuilder
 
     public function insert(array $data): int
     {
+
         $columns = array_keys($data);
         $placeholders = array_map(fn($col) => ':' . $col, $columns);
 
         $sql = "INSERT INTO {$this->table} (" . implode(',', $columns) . ") VALUES (" . implode(',', $placeholders) . ")";
         $bindings = [];
+
         foreach ($data as $col => $val) {
             $bindings[':' . $col] = $val;
         }

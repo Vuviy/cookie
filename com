@@ -5,34 +5,25 @@ vendor/bin/phpstan analyse src
 
 ./vendor/bin/psalm --no-cache
 
+CREATE TABLE remember_tokens (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 
-CREATE TABLE sessions (
-    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    user_id BIGINT UNSIGNED NOT NULL,
 
-    session_id CHAR(64) NOT NULL,
-    user_id BIGINT UNSIGNED NULL,
+    selector BINARY(16) NOT NULL,
+    validator_hash BINARY(32) NOT NULL,
 
-    data LONGTEXT NOT NULL,
+    fingerprint BINARY(32) NOT NULL,
 
-    created_at DATETIME NOT NULL,
-    last_activity DATETIME NOT NULL,
+    expires_at DATETIME NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_used_at DATETIME NULL,
 
-    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    CONSTRAINT uniq_selector UNIQUE (selector),
+    CONSTRAINT fk_remember_tokens_user
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE,
 
-    PRIMARY KEY (id),
-
-    UNIQUE KEY uniq_session_id (session_id),
-    KEY idx_user_id (user_id),
-    KEY idx_last_activity (last_activity),
-    KEY idx_active (is_active)
-
-) ENGINE=InnoDB
-  DEFAULT CHARSET=utf8mb4
-  COLLATE=utf8mb4_unicode_ci;
-
-
-  ALTER TABLE sessions
-  ADD COLUMN fingerprint CHAR(64) NOT NULL
-  AFTER data;
-
-  CREATE INDEX idx_fingerprint ON sessions (fingerprint);
+    INDEX idx_user_id (user_id),
+    INDEX idx_expires_at (expires_at)
+);

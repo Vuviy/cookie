@@ -2,14 +2,13 @@
 
 namespace App;
 
-final class SessionFingerprint
+final class Fingerprint
 {
     public function generate(): string
     {
-        $ip = $_SERVER['REMOTE_ADDR'] ?? '';
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
-        return hash('sha256', $ip . '|' . $userAgent);
+        return hash('sha256', $userAgent);
     }
 
     public function equals(string $storedFingerprint): bool

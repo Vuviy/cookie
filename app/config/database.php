@@ -12,8 +12,8 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => 'db_ses',
-            'dbname' => 'db_ses',
+            'host' => 'db_coockie',
+            'dbname' => 'db_coockie',
             'user' => 'root',
             'password' => 'root',
         ],
