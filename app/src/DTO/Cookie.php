@@ -2,7 +2,7 @@
 
 namespace App\DTO;
 
-final class Coockie
+final class Cookie
 {
     public function __construct(
         public ?int $id,

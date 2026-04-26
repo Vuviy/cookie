@@ -1,12 +1,13 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Repository;
 
 use App\Database\Database;
-use App\DTO\Coockie;
+use App\DTO\Cookie;
 use DateTimeImmutable;
 
-final class CoockieRepository
+final class CookieRepository
 {
     public function __construct(private Database $db)
     {
@@ -26,7 +27,7 @@ final class CoockieRepository
         $coockies = [];
 
         foreach ($row as $item) {
-            $coockies[] = new Coockie(
+            $coockies[] = new Cookie(
                 id: (int)$item['id'],
                 userId: $item['user_id'] ? (int)$item['user_id'] : null,
                 selector: $item['selector'],
@@ -41,7 +42,7 @@ final class CoockieRepository
     }
 
 
-    public function findBySelector(string $selector): ?Coockie
+    public function findBySelector(string $selector): ?Cookie
     {
         $row = $this->db
             ->table('remember_tokens')
@@ -52,7 +53,7 @@ final class CoockieRepository
             return null;
         }
 
-        return new Coockie(
+        return new Cookie(
             id: (int)$row['id'],
             userId: $row['user_id'] ? (int)$row['user_id'] : null,
             selector: $row['selector'],
@@ -64,7 +65,7 @@ final class CoockieRepository
         );
     }
 
-    public function create(Coockie $rememberToken): void
+    public function create(Cookie $rememberToken): void
     {
         $this->db->table('remember_tokens')->insert([
             'user_id' => $rememberToken->userId,
@@ -77,7 +78,7 @@ final class CoockieRepository
         ]);
     }
 
-    public function update(Coockie $rememberToken): void
+    public function update(Cookie $rememberToken): void
     {
         $this->db->table('remember_tokens')
             ->where('user_id', '=', $rememberToken->userId)
@@ -89,7 +90,7 @@ final class CoockieRepository
             ]);
     }
 
-    public function delete(Coockie $rememberToken): void
+    public function delete(Cookie $rememberToken): void
     {
         $this->db->table('remember_tokens')
             ->where('id', '=', $rememberToken->id)

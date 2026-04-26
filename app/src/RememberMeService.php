@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
-use App\DTO\Coockie;
-use App\Repository\CoockieRepository;
+use App\DTO\Cookie;
+use App\Repository\CookieRepository;
 use DateTimeImmutable;
 
 class RememberMeService
 {
-    public function __construct(private CoockieRepository $coockieRepository)
+    public function __construct(private CookieRepository $coockieRepository)
     {
     }
 
@@ -21,7 +23,7 @@ class RememberMeService
 
         $validatorHash = hash('sha256', $validator, true);
 
-        $rememberToken = new Coockie(
+        $rememberToken = new Cookie(
             id: null,
             userId: $userId,
             selector: $selector,
@@ -95,8 +97,6 @@ class RememberMeService
             return;
         }
 
-        // login($token->userId);
-
         $newSelector = random_bytes(16);
         $newValidator = random_bytes(32);
 
@@ -144,6 +144,10 @@ class RememberMeService
 
         $token = $this->coockieRepository->findBySelector($selector);
 
+        if (!$token) {
+            setcookie('remember_me', '', time() - 3600, '/');
+            return;
+        }
         $this->coockieRepository->delete($token);
 
         setcookie('remember_me', '', time() - 3600, '/');

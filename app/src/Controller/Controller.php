@@ -1,14 +1,17 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Database\Database;
 use App\RememberMeService;
-use App\Repository\CoockieRepository;
-
 
 final class Controller
 {
+
+    public function __construct(private RememberMeService $rememberMeService)
+    {
+    }
+
     public function index()
     {
         $view = require  __DIR__ . '/../../view/home.php';
@@ -16,14 +19,15 @@ final class Controller
     }
     public function login()
     {
-        $repository = new CoockieRepository(new Database(config()));
-        $rememberMeService = new RememberMeService($repository);
+        // TODO: real check credentials
+        // $userId = $this->userRepository->findByCredentials($login, $password)?->id;
 
-        $rememberMeChecked = true;
-        $userId = 445566;
+        $rememberMeChecked = array_key_exists('remember_me', $_POST);
+        $userId = 445566; // change in real
+
 
         if ($rememberMeChecked) {
-            $rememberMeService->createToken($userId);
+            $this->rememberMeService->createToken($userId);
         }
 
         echo 'login';
@@ -32,32 +36,21 @@ final class Controller
 
     public function page()
     {
-        $repository = new CoockieRepository(new Database(config()));
-        $rememberMeService = new RememberMeService($repository);
-
-
-        $rememberMeService->tryAutoLogin();
-
-
+        $this->rememberMeService->tryAutoLogin();
         echo 'page';
     }
 
     public function logout()
     {
-        $repository = new CoockieRepository(new Database(config()));
-        $rememberMeService = new RememberMeService($repository);
-
-        $rememberMeService->logout();
+        $this->rememberMeService->logout();
 
         echo 'logout';
     }
 
     public function logoutAll()
     {
-        $repository = new CoockieRepository(new Database(config()));
-        $rememberMeService = new RememberMeService($repository);
-
-        $rememberMeService->logoutAll(445566);
+        // $userId = $this->session->get('user_id'); // in real
+        $this->rememberMeService->logoutAll(445566); // change
 
         echo 'logoutAll';
     }

@@ -2,6 +2,7 @@ version: '3'
 
 services:
   php:
+    container_name: cookie_php
     build: './docker/php'
     volumes:
       - './app:/var/www/html'
@@ -12,25 +13,25 @@ services:
     volumes:
       - './app:/var/www/html'
       - './docker/nginx/conf.d:/etc/nginx/conf.d'
-  db_coockie:
+  db_cookie:
       image: mysql:8.4
       environment:
         MYSQL_DATABASE: ${DB_DATABASE}
         MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       volumes:
         - mysql_data:/var/lib/mysql
-      container_name: db_coockie
+      container_name: db_cookie
 
   phpmyadmin:
     image: phpmyadmin:5.2.1
     ports:
       - 8000:80
     environment:
-      PMA_HOST: db_coockie
+      PMA_HOST: db_cookie
       PMA_USER: root
       PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     depends_on:
-      - db_coockie
+      - db_cookie
 
 volumes:
   mysql_data:
